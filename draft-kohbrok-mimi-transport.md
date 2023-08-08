@@ -1,7 +1,7 @@
 ---
-title: MIMI over HTTPS
-abbrev: MoH
-docname: draft-kohbrok-mimi-moh-latest
+title: MIMI Transport
+abbrev: MT
+docname: draft-kohbrok-mimi-transport-latest
 category: info
 
 ipr: trust200902
@@ -203,10 +203,10 @@ user or one of its clients to an existing group.
 
 ## Rate-limiting
 
-The MoH protocol itself doesn’t include any rate-limiting measures. However,
-traditional rate-limiting (e.g. based on sender IP) can be applied, as well as
-rate-limiting based on information in the message body such as Group ID (e.g. in
-the case of the `/welcome_information` endpoint) or group member (in the case of
-the `/group_operation` endpoint). More fine-grained rate-limiting can be applied
-through the use of the emerging Privacy Pass protocol
-(draft-ietf-privacypass-auth-scheme
+The MIMI transport protocol itself doesn’t include any rate-limiting measures.
+However, traditional rate-limiting (e.g. based on sender IP) can be applied, as
+well as rate-limiting based on information in the message body such as Group ID
+(e.g. in the case of the `/welcome_information` endpoint) or group member (in
+the case of the `/group_operation` endpoint). More fine-grained rate-limiting
+can be applied through the use of the emerging Privacy Pass protocol
+(draft-ietf-privacypass-auth-scheme).

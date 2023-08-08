@@ -2,16 +2,16 @@
 
 This is the working area for the individual Internet-Draft, "MIMI over HTTPS".
 
-* [Editor's Copy](https://kkohbrok.github.io/mimi-moh/#go.draft-kohbrok-mimi-moh.html)
-* [Datatracker Page](https://datatracker.ietf.org/doc/draft-kohbrok-mimi-moh)
-* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-kohbrok-mimi-moh)
-* [Compare Editor's Copy to Individual Draft](https://kkohbrok.github.io/mimi-moh/#go.draft-kohbrok-mimi-moh.diff)
+* [Editor's Copy](https://kkohbrok.github.io/mimi-transport/#go.draft-kohbrok-mimi-transport.html)
+* [Datatracker Page](https://datatracker.ietf.org/doc/draft-kohbrok-mimi-transport)
+* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-kohbrok-mimi-transport)
+* [Compare Editor's Copy to Individual Draft](https://kkohbrok.github.io/mimi-transport/#go.draft-kohbrok-mimi-transport.diff)
 
 
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/kkohbrok/mimi-moh/blob/main/CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/kkohbrok/mimi-transport/blob/main/CONTRIBUTING.md).
 
 Contributions can be made by creating pull requests.
 The GitHub interface supports creating pull requests using the Edit (✏) button.
