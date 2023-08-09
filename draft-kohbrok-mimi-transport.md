@@ -23,7 +23,7 @@ author:
 
 --- abstract
 
-This document an HTTPS based transport layer for use with the MIMI Delivery Service.
+This document an HTTPS based transport layer for use with the MIMI Protocol.
 
 --- middle
 

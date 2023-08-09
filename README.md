@@ -1,4 +1,4 @@
-# MIMI over HTTPS
+# MIMI Transport
 
 This is the working area for the individual Internet-Draft, "MIMI over HTTPS".
 
