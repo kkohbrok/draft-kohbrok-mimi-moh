@@ -56,7 +56,7 @@ sender authentication key material for clients.
   pair (server signing keys), which servers use to sign queries they make to
   endpoints specified in this document and that the recipients can use to
   authenticate the sender. Senders make the public key available for recipients
-  to fetch via one of the endpoints defined in {{XXX}}.
+  to fetch via the endpoint defined in {{get-public-signature-key}}.
 * Sender authentication key material of clients is provided by the MIMI DS layer
   of the MIMI protocol.
 
