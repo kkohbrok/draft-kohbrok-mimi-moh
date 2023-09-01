@@ -1259,7 +1259,7 @@ opaque EventType;
 struct {
   ProtocolVersion version = mimi10;
   EventType event_type;
-  opaque serialized_event;
+  opaque serialized_event&lt;V&gt;;
 } EventEnvelope;
 </pre><a href="#section-3-2" class="pilcrow">¶</a>
 </div>

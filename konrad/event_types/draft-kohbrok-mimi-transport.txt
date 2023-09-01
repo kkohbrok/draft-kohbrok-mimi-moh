@@ -118,7 +118,7 @@ Table of Contents
    struct {
      ProtocolVersion version = mimi10;
      EventType event_type;
-     opaque serialized_event;
+     opaque serialized_event<V>;
    } EventEnvelope;
 
 4.  Endpoint Discovery
