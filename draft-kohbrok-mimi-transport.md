@@ -66,7 +66,7 @@ opaque EventType;
 struct {
   ProtocolVersion version = mimi10;
   EventType event_type;
-  opaque serialized_event;
+  opaque serialized_event<V>;
 } EventEnvelope;
 ~~~
 
