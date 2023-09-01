@@ -31,62 +31,26 @@ Protocol.
 # Introduction
 
 This document describes an HTTP-based transport layer protocol for use with all
-MIMI sub-protocols. The MIMI transport protocol provides a unifying framing
-structure for all MIMI event types and takes care of message authentication.
+MIMI sub-protocols. The MIMI transport protocol provides an envelope for for
+MIMI event types and takes care of message authentication.
 
 This document also describes the endpoints that are served by the individual
 MIMI functionalities.
 
 # Authentication
 
-The MIMI transport protocol provides mutual authentication for server-to-server
-communication, as well as additional sender-authentication for queries
-originating from clients.
+The MIMI transport protocol uses the mutually authenticated mode of TLS to
+provide authentication for server-to-server communication.
 
-## Authentication key material
-
-There are three types of key material used in this document. Recipient
-authentication key material, sender authentication key material for server, and
-sender authentication key material for clients.
-
-* Recipient authentication key material consists of an X.509 certificate chain
-  that each server uses to authenticate itself towards senders of HTTPS queries
-  to all endpoints used in this document.
-* Sender authentication key material of servers consists of a public/private key
-  pair (server signing keys), which servers use to sign queries they make to
-  endpoints specified in this document and that the recipients can use to
-  authenticate the sender. Senders make the public key available for recipients
-  to fetch via the endpoint defined in {{get-public-signature-key}}.
-* Sender authentication key material of clients is provided by the MIMI DS layer
-  of the MIMI protocol.
-
-TODO: Sender authentication key material needs to be specified further,
-especially how it can be end-to-end authenticated to the client's AS.
-
-## Server-to-server authentication
-
-For all HTTP queries to endpoints defined in this document, the sender first
-establishes a TLS connection with version at least 1.3 to protect
-confidentiality and to unilaterally authenticate the recipient of the query.
-
-In addition, the sending server signs its query using its server signing keys.
-
-To prevent forwarding attacks, the payload of each query includes both sender
-and recipient.
-
-TODO: We should improve this in the future to allow for mutually authenticated
-channels or at least batching.
-
-## Client-to-server authentication
-
-Some events contained in queries to the endpoints defined in this document
-originate from clients and are signed by the client using its client specific
-key material. The receiving server (or client) can authenticate such events by
-verifying the sender's signature.
+TODO: More information specific to how TLS should be used, i.e. mandate best
+practices that make sense in a mutually authenticated scenario that involves two
+WebPKI based certificates.
 
 # Framing
 
-The framing structure somewhat mimicks that of MLS.
+The MIMI transport protocol uses a simple framing structure that includes the
+event, as well as a small header that signals the protocol version, as well as
+the event type contained in the envelope.
 
 ~~~
 enum {
@@ -100,19 +64,10 @@ enum {
 opaque EventType;
 
 struct {
+  ProtocolVersion version = mimi10;
   EventType event_type;
-  opaque event_payload;
-} Event;
-
-struct {
-    ProtocolVersion version = mimi10;
-    opaque sender_domain;
-    opaque recipient_domain; // Only one for now
-
-    Event event;
-
-    opaque signature;
-} S2SMessage;
+  opaque serialized_event;
+} EventEnvelope;
 ~~~
 
 # Endpoint Discovery
