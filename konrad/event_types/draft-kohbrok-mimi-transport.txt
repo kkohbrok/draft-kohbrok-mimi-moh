@@ -65,15 +65,14 @@ Table of Contents
    3.  Framing
    4.  Endpoint Discovery
    5.  REST Endpoints
-     5.1.  Get Public Signature Key
-     5.2.  Process Group Message
-     5.3.  Welcome Information
-     5.4.  External Commit Information
-     5.5.  Verification Key
-     5.6.  Deliver Connection Request
-     5.7.  Deliver Message
-     5.8.  Connection KeyPackage Retrieval
-     5.9.  Group KeyPackage Retrieval
+     5.1.  Process Group Message
+     5.2.  Welcome Information
+     5.3.  External Commit Information
+     5.4.  Verification Key
+     5.5.  Deliver Connection Request
+     5.6.  Deliver Message
+     5.7.  Connection KeyPackage Retrieval
+     5.8.  Group KeyPackage Retrieval
    6.  Rate-limiting
    7.  IANA Considerations
      7.1.  Event Types
@@ -144,21 +143,7 @@ Table of Contents
    robert-mimi-delivery-service, where their underlying functionality is
    defined in more detail.
 
-5.1.  Get Public Signature Key
-
-   GET /signature_key
-   Content-type: application/octet-stream
-
-   Body
-   TLS serialized DSRequest
-
-   Response
-   TLS serialized DSResponse
-
-   TODO: We will likely want to respond with more info than just the
-   public key, i.e. lifetime, signature scheme, etc.
-
-5.2.  Process Group Message
+5.1.  Process Group Message
 
    POST /group_operation
    Content-type: application/octet-stream
@@ -179,7 +164,7 @@ Table of Contents
    payload itself rather than an HTTP header, the path or any other
    query parameter.
 
-5.3.  Welcome Information
+5.2.  Welcome Information
 
    GET /welcome_information
    Content-type: application/octet-stream
@@ -195,7 +180,7 @@ Table of Contents
    message.  The DS responds with the group’s RatchetTree, as well as
    authentication information of existing group members.
 
-5.4.  External Commit Information
+5.3.  External Commit Information
 
    GET /external_commit_information
    Content-type: application/octet-stream
@@ -210,7 +195,7 @@ Table of Contents
    allows a client to join a group without a Welcome message from an
    existing group member.
 
-5.5.  Verification Key
+5.4.  Verification Key
 
    GET /verification_key
    Content-type: application/octet-stream
@@ -225,7 +210,7 @@ Table of Contents
    provider.  This allows other providers to authenticate queries
    originating from this provider.
 
-5.6.  Deliver Connection Request
+5.5.  Deliver Connection Request
 
    POST /connection_request
    Content-type: application/octet-stream
@@ -239,7 +224,7 @@ Table of Contents
    This endpoint lets other providers deliver connection establishment
    request to clients of this provider.
 
-5.7.  Deliver Message
+5.6.  Deliver Message
 
    POST /deliver_message
    Content-type: application/octet-stream
@@ -254,7 +239,7 @@ Table of Contents
    to this endpoint, if one of the group’s clients is associated with
    this provider.
 
-5.8.  Connection KeyPackage Retrieval
+5.7.  Connection KeyPackage Retrieval
 
    POST /connection_key_packages
    Content-type: application/octet-stream
@@ -268,7 +253,7 @@ Table of Contents
    Allows another provider to retrieve KeyPackages for use during the
    connection establishment process between two users.
 
-5.9.  Group KeyPackage Retrieval
+5.8.  Group KeyPackage Retrieval
 
    POST /group_key_packages
    Content-type: application/octet-stream
