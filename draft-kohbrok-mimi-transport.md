@@ -91,23 +91,6 @@ All structs and concepts referred to below are defined in
 draft-robert-mimi-delivery-service, where their underlying functionality is
 defined in more detail.
 
-## Get Public Signature Key
-
-~~~
-GET /signature_key
-Content-type: application/octet-stream
-
-Body
-TLS serialized DSRequest
-
-Response
-TLS serialized DSResponse
-~~~
-
-TODO: We will likely want to respond with more info than just the public key,
-i.e. lifetime, signature scheme, etc.
-
-
 ## Process Group Message
 
 ~~~
