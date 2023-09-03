@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-08-31T00:09:35.169883+00:00",
+  "timestamp": "2023-09-03T00:10:09.114292+00:00",
   "repo": "kkohbrok/mimi-transport",
   "labels": [
     {
@@ -109,13 +109,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2023-08-28T14:56:14Z",
-      "updatedAt": "2023-08-28T15:12:06Z",
+      "updatedAt": "2023-09-01T09:18:32Z",
       "baseRepository": "kkohbrok/mimi-transport",
       "baseRefName": "main",
       "baseRefOid": "c884814397511265053c6ce0960a8838ae21343e",
       "headRepository": "kkohbrok/mimi-transport",
       "headRefName": "konrad/event_types",
-      "headRefOid": "42785c91b59bc69ab7e24d6e4b1ec2b80da3c47b",
+      "headRefOid": "f488048c813b88d53aae0be9596c734fc6449eec",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
