@@ -23,37 +23,63 @@ author:
 
 --- abstract
 
-This document an HTTPS based transport layer for use with the MIMI Protocol.
+This document defines an HTTPS based transport layer for use with the MIMI
+Protocol.
 
 --- middle
 
 # Introduction
 
-This document describes an HTTP-based transport layer protocol for use with the
-Delivery Service protocol specified in draft-robert-mimi-delivery-service, as
-well as other MIMI-relevant components such as contact discovery.
+This document describes an HTTP-based transport layer protocol for use with all
+MIMI sub-protocols. The MIMI transport protocol provides an envelope for for
+MIMI transaction types and takes care of message authentication.
 
-## Transport Security and Authentication
+This document also describes the endpoints that are served by the individual
+MIMI functionalities.
 
-All HTTP queries described in this document MUST use TLS with version 1.3 or
-higher to protect confidentiality and authenticity of the payloads. Delivery
-Service payloads are typically authenticated by the sender through the use of
-signatures and rely on HTTPS to authenticate the recipient. To prevent
-forwarding attacks, the payloads of the Delivery Service include both sender and
-recipient. The provider should thus always verify that the recipient corresponds
-to its own provider name.
+# Authentication
 
-## Endpoint Discovery
+The MIMI transport protocol uses the mutually authenticated mode of TLS to
+provide authentication for server-to-server communication.
+
+TODO: More information specific to how TLS should be used, i.e. mandate best
+practices that make sense in a mutually authenticated scenario that involves two
+WebPKI based certificates.
+
+# Framing
+
+The MIMI transport protocol uses a simple framing structure that includes the
+transaction payload, as well as a small header that signals the protocol
+version, as well as the transaction type contained in the envelope.
+
+~~~
+enum {
+    reserved(0),
+    mimi10(1),
+    (65535)
+} ProtocolVersion;
+
+// See the "MIMI Transaction Types" IANA registry for values
+// e.g. "mimi.delivery-service.add"
+opaque TransactionType;
+
+struct {
+  ProtocolVersion version = mimi10;
+  TransactionType transaction_type;
+  opaque serialized_transaction<V>;
+} TransactionEnvelope;
+~~~
+
+# Endpoint Discovery
 
 A messaging provider that wants to query the endpoint of another messaging
 provider first has to discover the fully qualified domain name under which
 Delivery Service of that provider can be reached. It does so by performing a GET
-request to `[provider.com](http://provider.com)/.well-known/mimi/ds-domain`.
-provider.com could for example answer by providing the domain
-`[ds.provider.com](http://ds.provider.com)` (assuming that this is where it
-responds to the REST endpoints defined below).
+request to `provider.com/.well-known/mimi/ds-domain`. provider.com could for
+example answer by providing the domain `ds.provider.com` (assuming that this is
+where it responds to the REST endpoints defined below).
 
-## REST Endpoints
+# REST Endpoints
 
 The following REST endpoints can then be used to access the different
 functionalities of the Delivery Service.
@@ -65,7 +91,7 @@ All structs and concepts referred to below are defined in
 draft-robert-mimi-delivery-service, where their underlying functionality is
 defined in more detail.
 
-### Process Group Message
+## Process Group Message
 
 ~~~
 POST /group_operation
@@ -86,7 +112,7 @@ the corresponding group rather than the service provider of that member. The
 exact operation, as well as the target group ID is determined by the payload
 itself rather than an HTTP header, the path or any other query parameter.
 
-### Welcome Information
+## Welcome Information
 
 ~~~
 GET /welcome_information
@@ -104,7 +130,7 @@ group for clients that have already received a Welcome message. The DS responds
 with the group’s RatchetTree, as well as authentication information of existing
 group members.
 
-### External Commit Information
+## External Commit Information
 
 ~~~
 GET /external_commit_information
@@ -120,7 +146,7 @@ TLS serialized DSResponse
 Guest providers can use this endpoint to obtain information that allows a client
 to join a group without a Welcome message from an existing group member.
 
-### Verification Key
+## Verification Key
 
 ~~~
 GET /verification_key
@@ -137,7 +163,7 @@ This allows guest providers to obtain the verification key of this provider.
 This allows other providers to authenticate queries originating from this
 provider.
 
-### Deliver Connection Request
+## Deliver Connection Request
 
 ~~~
 POST /connection_request
@@ -153,7 +179,7 @@ TLS serialized QueueingServiceResponse
 This endpoint lets other providers deliver connection establishment request to
 clients of this provider.
 
-### Deliver Message
+## Deliver Message
 
 ~~~
 POST /deliver_message
@@ -169,7 +195,7 @@ TLS serialized QueueingServiceResponse
 An owning provider can deliver messages from one of its owned groups to this
 endpoint, if one of the group’s clients is associated with this provider.
 
-### Connection KeyPackage Retrieval
+## Connection KeyPackage Retrieval
 
 ~~~
 POST /connection_key_packages
@@ -185,7 +211,7 @@ TLS serialized ConnectionKeyPackageResponse
 Allows another provider to retrieve KeyPackages for use during the connection
 establishment process between two users.
 
-### Group KeyPackage Retrieval
+## Group KeyPackage Retrieval
 
 ~~~
 POST /group_key_packages
@@ -201,7 +227,7 @@ TLS serialized GroupKeyPackageResponse
 Allows another provider to retrieve KeyPackages that can be used to add another
 user or one of its clients to an existing group.
 
-## Rate-limiting
+# Rate-limiting
 
 The MIMI transport protocol itself doesn’t include any rate-limiting measures.
 However, traditional rate-limiting (e.g. based on sender IP) can be applied, as
@@ -210,3 +236,22 @@ well as rate-limiting based on information in the message body such as Group ID
 the case of the `/group_operation` endpoint). More fine-grained rate-limiting
 can be applied through the use of the emerging Privacy Pass protocol
 (draft-ietf-privacypass-auth-scheme).
+
+# IANA Considerations
+
+IANA has created the following registries:
+* Transaction Types
+
+## Transaction Types
+
+An transaction type denotes the nature of a given payload in the context of the
+MIMI protocol. The transaction type is a string that is composed of substrings
+separated by dots.
+
+The first substring is "mimi", followed by the document that defines the
+corresponding transaction payload, which in turn is followed by the name of the
+transaction. The MIMI transaction specified in the MIMI DS document that signals
+the addition of a client would for example be denoted by the string
+~~~
+"mimi.delivery-service.add"
+~~~
