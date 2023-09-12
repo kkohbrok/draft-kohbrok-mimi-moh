@@ -32,7 +32,7 @@ Protocol.
 
 This document describes an HTTP-based transport layer protocol for use with all
 MIMI sub-protocols. The MIMI transport protocol provides an envelope for for
-MIMI event types and takes care of message authentication.
+MIMI transaction types and takes care of message authentication.
 
 This document also describes the endpoints that are served by the individual
 MIMI functionalities.
@@ -49,8 +49,8 @@ WebPKI based certificates.
 # Framing
 
 The MIMI transport protocol uses a simple framing structure that includes the
-event, as well as a small header that signals the protocol version, as well as
-the event type contained in the envelope.
+transaction payload, as well as a small header that signals the protocol
+version, as well as the transaction type contained in the envelope.
 
 ~~~
 enum {
@@ -59,15 +59,15 @@ enum {
     (65535)
 } ProtocolVersion;
 
-// See the "MIMI Event Types" IANA registry for values
+// See the "MIMI Transaction Types" IANA registry for values
 // e.g. "mimi.delivery-service.add"
-opaque EventType;
+opaque TransactionType;
 
 struct {
   ProtocolVersion version = mimi10;
-  EventType event_type;
-  opaque serialized_event<V>;
-} EventEnvelope;
+  TransactionType transaction_type;
+  opaque serialized_transaction<V>;
+} TransactionEnvelope;
 ~~~
 
 # Endpoint Discovery
@@ -240,18 +240,18 @@ can be applied through the use of the emerging Privacy Pass protocol
 # IANA Considerations
 
 IANA has created the following registries:
-* Event Types
+* Transaction Types
 
-## Event Types
+## Transaction Types
 
-An event type denotes the nature of a given payload in the context of the MIMI
-protocol. The event type is a string that is composed of substrings separated by
-dots.
+An transaction type denotes the nature of a given payload in the context of the
+MIMI protocol. The transaction type is a string that is composed of substrings
+separated by dots.
 
 The first substring is "mimi", followed by the document that defines the
-corresponding event payload, which in turn is followed by the name of the event.
-The MIMI event specified in the MIMI DS document that signals the addition of a
-client would for example be denoted by the string
+corresponding transaction payload, which in turn is followed by the name of the
+transaction. The MIMI transaction specified in the MIMI DS document that signals
+the addition of a client would for example be denoted by the string
 ~~~
 "mimi.delivery-service.add"
 ~~~
