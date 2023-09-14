@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-09-12T00:09:31.360410+00:00",
+  "timestamp": "2023-09-14T00:09:32.509185+00:00",
   "repo": "kkohbrok/mimi-transport",
   "labels": [
     {
@@ -100,7 +100,7 @@
       "id": "PR_kwDOJkPwWM5Y8a2c",
       "title": "Add auth details, framing and event types",
       "url": "https://github.com/kkohbrok/mimi-transport/pull/2",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "kkohbrok",
       "authorAssociation": "OWNER",
       "assignees": [
@@ -109,17 +109,19 @@
       "labels": [],
       "body": "",
       "createdAt": "2023-08-28T14:56:14Z",
-      "updatedAt": "2023-09-01T09:18:32Z",
+      "updatedAt": "2023-09-12T05:32:30Z",
       "baseRepository": "kkohbrok/mimi-transport",
       "baseRefName": "main",
       "baseRefOid": "c884814397511265053c6ce0960a8838ae21343e",
       "headRepository": "kkohbrok/mimi-transport",
       "headRefName": "konrad/event_types",
-      "headRefOid": "f488048c813b88d53aae0be9596c734fc6449eec",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "d6a1d53d12782e079f1d4647ef36aefcdb44bf6e",
+      "closedAt": "2023-09-12T05:32:30Z",
+      "mergedAt": "2023-09-12T05:32:30Z",
+      "mergedBy": "kkohbrok",
+      "mergeCommit": {
+        "oid": "196ea1d8f78d208a0afd2a009e3aab47650d2f1d"
+      },
       "comments": [],
       "reviews": []
     }
