@@ -1,0 +1,306 @@
+
+
+
+
+Network Working Group                                         K. Kohbrok
+Internet-Draft                                                 R. Robert
+Intended status: Informational                               Phoenix R&D
+Expires: 24 March 2024                                 21 September 2023
+
+
+                             MIMI Transport
+                  draft-kohbrok-mimi-transport-latest
+
+Abstract
+
+   This document defines an HTTPS based transport layer for use with the
+   MIMI Protocol.
+
+Discussion Venues
+
+   This note is to be removed before publishing as an RFC.
+
+   Discussion of this document takes place on the More Instant Messaging
+   Interoperability Working Group mailing list (mimi@ietf.org), which is
+   archived at https://mailarchive.ietf.org/arch/browse/mimi/.
+
+   Source for this draft and an issue tracker can be found at
+   https://github.com/kkohbrok/mimi-transport.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 24 March 2024.
+
+Copyright Notice
+
+   Copyright (c) 2023 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+Table of Contents
+
+   1.  Introduction
+   2.  Authentication
+   3.  Framing
+   4.  Endpoint Discovery
+   5.  REST Endpoints
+     5.1.  Process Group Message
+     5.2.  Welcome Information
+     5.3.  External Commit Information
+     5.4.  Verification Key
+     5.5.  Deliver Connection Request
+     5.6.  Deliver Message
+     5.7.  Connection KeyPackage Retrieval
+     5.8.  Group KeyPackage Retrieval
+   6.  Rate-limiting
+   7.  IANA Considerations
+     7.1.  Transaction Types
+   Authors' Addresses
+
+1.  Introduction
+
+   This document describes an HTTP-based transport layer protocol for
+   use with all MIMI sub-protocols.  The MIMI transport protocol
+   provides an envelope for for MIMI transaction types and takes care of
+   message authentication.
+
+   This document also describes the endpoints that are served by the
+   individual MIMI functionalities.
+
+2.  Authentication
+
+   The MIMI transport protocol uses the mutually authenticated mode of
+   TLS to provide authentication for server-to-server communication.
+
+   TODO: More information specific to how TLS should be used, i.e.
+   mandate best practices that make sense in a mutually authenticated
+   scenario that involves two WebPKI based certificates.
+
+3.  Framing
+
+   The MIMI transport protocol uses a simple framing structure that
+   includes the transaction payload, as well as a small header that
+   signals the protocol version, as well as the transaction type
+   contained in the envelope.
+
+   enum {
+       reserved(0),
+       mimi10(1),
+       (65535)
+   } ProtocolVersion;
+
+   // See the "MIMI Transaction Types" IANA registry for values
+   // e.g. "mimi.delivery-service.add"
+   opaque TransactionType;
+
+   struct {
+     ProtocolVersion version = mimi10;
+     TransactionType transaction_type;
+     opaque serialized_transaction<V>;
+   } TransactionEnvelope;
+
+4.  Endpoint Discovery
+
+   A messaging provider that wants to query the endpoint of another
+   messaging provider first has to discover the fully qualified domain
+   name under which Delivery Service of that provider can be reached.
+   It does so by performing a GET request to provider.com/.well-
+   known/mimi/ds-domain. provider.com could for example answer by
+   providing the domain ds.provider.com (assuming that this is where it
+   responds to the REST endpoints defined below).
+
+5.  REST Endpoints
+
+   The following REST endpoints can then be used to access the different
+   functionalities of the Delivery Service.
+
+   As the Delivery Service relies on TLS encoded structs, all requests
+   to endpoints described below should be marked as Content-type:
+   application/octet-stream.
+
+   All structs and concepts referred to below are defined in draft-
+   robert-mimi-delivery-service, where their underlying functionality is
+   defined in more detail.
+
+5.1.  Process Group Message
+
+   POST /group_operation
+   Content-type: application/octet-stream
+
+   Body
+   TLS serialized DSRequest
+
+   Response
+   TLS serialized DSResponse
+
+   This REST endpoint provides access to all operations associated with
+   an existing MLS group on the Delivery Service such as delivering
+   application messages, adding group members, removing group members,
+   updating key material, etc.  The payloads for this endpoint are
+   generally provided (and signed) by a member of the corresponding
+   group rather than the service provider of that member.  The exact
+   operation, as well as the target group ID is determined by the
+   payload itself rather than an HTTP header, the path or any other
+   query parameter.
+
+5.2.  Welcome Information
+
+   GET /welcome_information
+   Content-type: application/octet-stream
+
+   Body
+   TLS serialized DSRequest
+
+   Response
+   TLS serialized DSResponse
+
+   Through this endpoint, a provider can obtain information required to
+   join the group for clients that have already received a Welcome
+   message.  The DS responds with the group’s RatchetTree, as well as
+   authentication information of existing group members.
+
+5.3.  External Commit Information
+
+   GET /external_commit_information
+   Content-type: application/octet-stream
+
+   Body
+   TLS serialized DSRequest
+
+   Response
+   TLS serialized DSResponse
+
+   Guest providers can use this endpoint to obtain information that
+   allows a client to join a group without a Welcome message from an
+   existing group member.
+
+5.4.  Verification Key
+
+   GET /verification_key
+   Content-type: application/octet-stream
+
+   Body
+   TLS serialized VerificationKeyRequest
+
+   Response
+   TLS serialized VerificationKeyResponse
+
+   This allows guest providers to obtain the verification key of this
+   provider.  This allows other providers to authenticate queries
+   originating from this provider.
+
+5.5.  Deliver Connection Request
+
+   POST /connection_request
+   Content-type: application/octet-stream
+
+   Body
+   TLS serialized QueueingServiceRequest
+
+   Response
+   TLS serialized QueueingServiceResponse
+
+   This endpoint lets other providers deliver connection establishment
+   request to clients of this provider.
+
+5.6.  Deliver Message
+
+   POST /deliver_message
+   Content-type: application/octet-stream
+
+   Body
+   TLS serialized QueueingServiceRequest
+
+   Response
+   TLS serialized QueueingServiceResponse
+
+   An owning provider can deliver messages from one of its owned groups
+   to this endpoint, if one of the group’s clients is associated with
+   this provider.
+
+5.7.  Connection KeyPackage Retrieval
+
+   POST /connection_key_packages
+   Content-type: application/octet-stream
+
+   Body
+   TLS serialized ConnectionKeyPackageRequest
+
+   Response
+   TLS serialized ConnectionKeyPackageResponse
+
+   Allows another provider to retrieve KeyPackages for use during the
+   connection establishment process between two users.
+
+5.8.  Group KeyPackage Retrieval
+
+   POST /group_key_packages
+   Content-type: application/octet-stream
+
+   Body
+   TLS serialized GroupKeyPackageRequest
+
+   Response
+   TLS serialized GroupKeyPackageResponse
+
+   Allows another provider to retrieve KeyPackages that can be used to
+   add another user or one of its clients to an existing group.
+
+6.  Rate-limiting
+
+   The MIMI transport protocol itself doesn’t include any rate-limiting
+   measures.  However, traditional rate-limiting (e.g. based on sender
+   IP) can be applied, as well as rate-limiting based on information in
+   the message body such as Group ID (e.g. in the case of the
+   /welcome_information endpoint) or group member (in the case of the
+   /group_operation endpoint).  More fine-grained rate-limiting can be
+   applied through the use of the emerging Privacy Pass protocol (draft-
+   ietf-privacypass-auth-scheme).
+
+7.  IANA Considerations
+
+   IANA has created the following registries: * Transaction Types
+
+7.1.  Transaction Types
+
+   An transaction type denotes the nature of a given payload in the
+   context of the MIMI protocol.  The transaction type is a string that
+   is composed of substrings separated by dots.
+
+   The first substring is "mimi", followed by the document that defines
+   the corresponding transaction payload, which in turn is followed by
+   the name of the transaction.  The MIMI transaction specified in the
+   MIMI DS document that signals the addition of a client would for
+   example be denoted by the string ~~~ "mimi.delivery-service.add" ~~~
+
+Authors' Addresses
+
+   Konrad Kohbrok
+   Phoenix R&D
+   Email: konrad.kohbrok@datashrine.de
+
+
+   Raphael Robert
+   Phoenix R&D
+   Email: ietf@raphaelrobert.com
